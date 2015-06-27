@@ -24,7 +24,7 @@ public class Controller {
 
     public void setBankroll(Player p) {
         for (int i = 0; i < 6; i++) {
-            if (players[i].isInGame) {
+            if (players[i].getPosition() != -1) {
                 players[i].sendUTF("change");
                 players[i].sendInt(p.GetPosition());
                 players[i].sendUTF("bankroll");
@@ -32,6 +32,15 @@ public class Controller {
             }
         }
         //System.out.println("controller send bankroll");
+    }
+
+    public void setDealer(int pos) {
+        for (int i = 0; i < 6; i++) {
+            if (players[i].getPosition() != -1) {
+                players[i].sendUTF("dealer");
+                players[i].sendInt(pos);
+            }
+        }
     }
 
     public void setBet(Player p) {
@@ -48,7 +57,7 @@ public class Controller {
 
     public void setBank(int b) {
         for (int i = 0; i < 6; i++) {
-            if (players[i].isInGame) {
+            if (players[i].getPosition() != -1) {
                 players[i].sendUTF("bank");
                 players[i].sendInt(b);
             }
@@ -63,7 +72,7 @@ public class Controller {
 
     public void nullHand(Player p) {
         for (int i = 0; i < 6; i++) {
-            if (players[i].isInGame) {
+            if (players[i].getPosition() != -1) {
                 players[i].sendUTF("change");
                 players[i].sendInt(p.GetPosition());//��� ����� ���� ������ � ��������
                 players[i].sendUTF("hand");
@@ -92,7 +101,7 @@ public class Controller {
 
     public void setFlop (Card c1, Card c2, Card c3) {
         for (int i = 0; i < 6; i++) {
-            if (players[i].isInGame) {
+            if (players[i].getPosition() != -1) {
                 players[i].sendUTF("flop");
                 players[i].sendUTF(c1.toString());
                 players[i].sendUTF(c2.toString());
@@ -112,17 +121,43 @@ public class Controller {
     }
     public void setRiver (Card c) {
         for (int i = 0; i < 6; i++) {
-            if (players[i].isInGame) {
+            if (players[i].getPosition() != -1) {
                 players[i].sendUTF("river");
                 players[i].sendUTF(c.toString());
+                //players[i].setCombination(players[i].getHand().c1, players[i].getHand().c2);
             }
         }
         //System.out.println("controller send river");
     }
 
-    public void setHand (Player p, Hand h) {
+    public void showCards(){
         for (int i = 0; i < 6; i++) {
             if (players[i].isInGame) {
+                for (int j = 0; j < 6; j++) {
+                    if (players[j].getPosition() != -1) {
+                        players[j].sendUTF("change");
+                        players[j].sendInt(i);
+                        players[j].sendUTF("hand");
+                        players[j].sendUTF(players[i].getHand().c1.toString());
+                        players[j].sendUTF(players[i].getHand().c2.toString());
+                    }
+                }
+            }
+        }
+    }
+
+    public void resetHodor (Player p) {
+        for (int i = 0; i < 6; i++) {
+            if (players[i].getPosition() != -1) {
+                players[i].sendUTF("hodor");
+                players[i].sendInt(p.GetPosition());
+            }
+        }
+    }
+
+    public void setHand (Player p, Hand h) {
+        for (int i = 0; i < 6; i++) {
+            if (players[i].getPosition() != -1) {
                 if (i == p.getPosition()) {
                     p.sendUTF("change");
                     p.sendInt(i);

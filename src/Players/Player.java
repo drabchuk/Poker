@@ -5,6 +5,7 @@ import Cards.CollectionCards;
 import Cards.Hand;
 
 import java.io.*;
+import java.sql.*;
 import java.net.Socket;
 
 /**
@@ -37,12 +38,19 @@ public class Player {
         return collection.checkCombination();
     }
 
+    public CollectionCards getCollectionCards() {
+        return collection;
+    }
+
     public void setCombination(Card... cards) {
         collection = new CollectionCards(cards);
     }
 
     public String getLogin() {
         return login;
+    }
+    public String getIP() {
+        return socket.getInetAddress().toString();
     }
     public int getPosition() {
         return position;
@@ -56,6 +64,23 @@ public class Player {
         login = null;
     }
 
+    /*public void sendUTF(String s) {
+        try {
+            out.writeUTF(s);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("send " + s);
+    }
+
+    public void sendInt(int x) {
+        try {
+            out.writeInt(x);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("send " + x);
+    }*/
     public void sendUTF(String s) {
         try {
             out.writeUTF(s);
@@ -85,17 +110,7 @@ public class Player {
         return b;
     }
 
-    public String Get() {
-        String s = "Error";
-        try {
-            s = in.readUTF();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return s;
-    }
-
-    public int GetInt() {
+    public int readInt() {
         int data = -2;
         try {
             data = in.readInt();
@@ -104,6 +119,16 @@ public class Player {
         }
         return data;
     }
+
+    /*public int readInt() {
+        int data = -2;
+        try {
+            data = in.readInt();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return data;
+    }*/
 
     public void setPlayer(Socket st, int c) {
         isInGame = true;
@@ -166,17 +191,13 @@ public class Player {
 
     public void giveMoney(int m) {
         bankroll += m;
-        try {
-            out.writeUTF("you money");
-            out.writeInt(m);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
-    public int action () {
-        sendUTF("You turn");
-        return GetInt();
+    public int action (int min, int max) {
+        sendUTF("you turn");
+        sendInt(min);
+        sendInt(max);
+        return readInt();
     }
 
     public void takeMoney(int m) {

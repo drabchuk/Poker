@@ -217,7 +217,7 @@ public class CollectionCards {
         return "Kicker";
     }
 
-    /*public int checkCombinationRank() {
+    public int checkCombinationRank() {
         byte kareIndex = 0;
 
         //вспомогательный массив (4, 1, 1, 0) - фулл хаус
@@ -268,6 +268,221 @@ public class CollectionCards {
             else if (counter[2] > 0)
                 return 3;
         }
+        return 0;
+    }
+
+    private static int kicker(CollectionCards c1, CollectionCards c2) {
+        return kickerRec(c1, c2, 14, 0, 5);
+    }
+
+    private static int kickerRec(CollectionCards c1, CollectionCards c2, int index, int coolectionLength, int kickerNumber) {
+        if (coolectionLength < kickerNumber) {
+            int i = index;
+            do {
+                i--;
+            } while (c1.pairDataMas[i] == 0 && c2.pairDataMas[i] == 0);
+            if (c1.pairDataMas[i] == 1) {
+                if (c2.pairDataMas[i] == 1) {
+                    return kickerRec(c1, c2, i, coolectionLength + 1, kickerNumber);
+                } else {
+                    return 1;
+                }
+            } else {
+                if (c2.pairDataMas[i] == 1) {
+                    return -1;
+                } else {
+                    System.out.println("NE WER' GLAZAM SWOIM");
+                }
+            }
+        }
+        System.out.println("NE WER' GLAZAM SWOIM");
+        return 0;
+    }
+
+    private static int pair(CollectionCards c1, CollectionCards c2) {
+        int i = 14;
+        do {
+            i--;
+        } while (c1.pairDataMas[i] <= 1 && c2.pairDataMas[i] <= 1);
+        if (c1.pairDataMas[i] >= 2)
+            if (c2.pairDataMas[i] >= 2)
+                return kickerRec(c1, c2, 14, 0, 3);
+            else
+                return 1;
+        else if (c2.pairDataMas[i] >= 2)
+            return -1;
+        else
+            System.out.println("NE WER' GLAZAM SWOIM");
+        System.out.println("NE WER' GLAZAM SWOIM");
+        return 0;
+    }
+
+    private static int twoPairs(CollectionCards c1, CollectionCards c2) {
+        int i = 14;
+        do {
+            i--;
+        } while (c1.pairDataMas[i] <= 1 && c2.pairDataMas[i] <= 1);
+        if (c1.pairDataMas[i] >= 2)
+            if (c2.pairDataMas[i] >= 2) {
+                do {
+                    i--;
+                } while (c1.pairDataMas[i] <= 1 && c2.pairDataMas[i] <= 1);
+                if (c1.pairDataMas[i] >= 2)
+                    if (c2.pairDataMas[i] >= 2)
+                        return kickerRec(c1, c2, 14, 0, 1);
+                else
+                    return 1;
+                else
+                if (c2.pairDataMas[i] >= 2)
+                    return -1;
+                else
+                    System.out.println("NE WER' GLAZAM SWOIM");
+                System.out.println("NE WER' GLAZAM SWOIM");
+                return 0;
+            } else
+                return 1;
+        else if (c2.pairDataMas[i] >= 2)
+            return -1;
+        else
+            System.out.println("NE WER' GLAZAM SWOIM");
+        System.out.println("NE WER' GLAZAM SWOIM");
+        return 0;
+    }
+
+    private static int set(CollectionCards c1, CollectionCards c2) {
+        int i = 14;
+        do {
+            i--;
+        } while (c1.pairDataMas[i] <= 2 && c2.pairDataMas[i] <= 2);
+        if (c1.pairDataMas[i] >= 3)
+            if (c2.pairDataMas[i] >= 3)
+                return kickerRec(c1, c2, 14, 0, 2);
+            else
+                return 1;
+        else if (c2.pairDataMas[i] >= 2)
+            return -1;
+        else
+            System.out.println("NE WER' GLAZAM SWOIM");
+        System.out.println("NE WER' GLAZAM SWOIM");
+        return 0;
+    }
+
+    private static int straight(CollectionCards c1, CollectionCards c2) {
+        if (c1.straightIndex > c2.straightIndex)
+            return 1;
+        else if (c2.straightIndex > c1.straightIndex)
+            return -1;
+        else
+            return 0;
+    }
+
+    private static int flash(CollectionCards c1, CollectionCards c2, int index, int coolectionLength) {
+        if (coolectionLength < 5) {
+            int i = index;
+            do {
+                i--;
+            } while (c1.table[i][c1.sameSuitMaxIndex] && c2.table[i][c2.sameSuitMaxIndex]);
+            if (c1.table[i][c1.sameSuitMaxIndex]) {
+                if (c2.table[i][c2.sameSuitMaxIndex]) {
+                    return flash(c1, c2, i, coolectionLength + 1);
+                } else {
+                    return 1;
+                }
+            } else {
+                if (c2.table[i][c2.sameSuitMaxIndex]) {
+                    return -1;
+                } else {
+                    System.out.println("NE WER' GLAZAM SWOIM");
+                }
+            }
+        }
+        return 0;
+    }
+
+    private static int fullHouse(CollectionCards c1, CollectionCards c2) {
+        int i = 14;
+        do {
+            i--;
+        } while (c1.pairDataMas[i] < 3 && c2.pairDataMas[i] < 3);
+        if (c1.pairDataMas[i] == 3)
+            if (c2.pairDataMas[i] == 3) {
+                i = 14;
+                do {
+                    i--;
+                } while (c1.pairDataMas[i] < 2 && c2.pairDataMas[i] < 2);
+                if (c1.pairDataMas[i] == 2)
+                    if (c2.pairDataMas[i] == 2) {
+                        return 0;
+                    } else
+                        return 1;
+                else
+                    return -1;
+            } else
+                return 1;
+        else
+            return -1;
+    }
+
+    private static int kare(CollectionCards c1, CollectionCards c2) {
+        int i = 14;
+        do {
+            i--;
+        } while (c1.pairDataMas[i] < 4 && c2.pairDataMas[i] < 4);
+        if (c1.pairDataMas[i] == 4)
+            return 1;
+        else
+            return -1;
+    }
+
+    public static int bigRank(CollectionCards c1, CollectionCards c2, int combinationRank) {
+        switch (combinationRank) {
+            case 0: {
+                return kicker(c1, c2);
+                //break;
+            }
+            case 1: {
+                return pair(c1, c2);
+                //break;
+            }
+            case 2: {
+                return twoPairs(c1, c2);
+                //break;
+            }
+            case 3: {
+                return set(c1, c2);
+                //break;
+            }
+            case 4: {
+                return straight(c1, c2);
+                //break;
+            }
+            case 5: {
+                return flash(c1, c2, 14, 0);
+                //break;
+            }
+            case 6: {
+                return fullHouse(c1, c2);
+                //break;
+            }
+            case 7: {
+                return kare(c1, c2);
+                //break;
+            }
+            default:
+                return 0;
+            //break;
+        }
+    }
+
+    public static int bigger(CollectionCards c1, CollectionCards c2) {
+        int cr1 = c1.checkCombinationRank();
+        int cr2 = c2.checkCombinationRank();
+        if (cr1 > cr2)
+            return 1;
+        if (cr2 < cr1)
+            return -1;
+        if (cr1 == cr2)
+            return bigRank(c1, c2, cr1);
         return 0;
     }
 
@@ -353,5 +568,5 @@ public class CollectionCards {
                 return 3;
         }
         return 0;
-    }*/
+    }
 }
